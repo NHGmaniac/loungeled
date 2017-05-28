@@ -24,6 +24,8 @@ Badge badge;
 void setup() {
   badge.init();
   badge.setBacklight(true);
+    tft.fillScreen(BLACK);
+  tft.setCursor(0,0);
   pixels.setPixelColor(1, 0, 255, 0);
   pixels.show();
   delay(100);
@@ -37,31 +39,34 @@ void setup() {
   f.println("LOUNGELED\n");
   setup_wifi();
   UDP.begin(localPort);
+  tft.fillScreen(BLACK);
+  tft.setCursor(0,0);
+  tft.println("LoungeLed");
+  tft.writeFramebuffer();
   
   
 
 }
 
 void loop() {
+
 int packetSize = UDP.parsePacket();
 if(packetSize)
 {
-  tft.fillScreen(BLACK);
-  tft.setCursor(0,0);
   
   if(packetSize == bufferSize){
-    tft.print("Packet!");
     UDP.read(packetBuffer, bufferSize);
     for (int i = 0; i < 12; i = i+3){
       unsigned char r = packetBuffer[i];
       unsigned char g = packetBuffer[i+1];
       unsigned char b = packetBuffer[i+2];
-      pixels.setPixelColor(i, pixels.Color(r, g, b));
-      tft.printf("%d, %d, %d\n", r, g, b);
+      pixels.setPixelColor(i/3, pixels.Color(r, g, b));
+      //tft.printf("%d, %d, %d\n", r, g, b);
+      //tft.println(i);
      
     }
     pixels.show();
-    tft.writeFramebuffer();
+    //tft.writeFramebuffer();
  
     }
 
